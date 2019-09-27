@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fehead.songs.dao.SonglistsDOMapper">
+  <resultMap id="BaseResultMap" type="com.fehead.songs.dataobject.SonglistsDO">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="songer_name" jdbcType="VARCHAR" property="songerName" />
+    <result column="song_name" jdbcType="VARCHAR" property="songName" />
+    <result column="steps" jdbcType="INTEGER" property="steps" />
+    <result column="user_id" jdbcType="INTEGER" property="userId" />
+    <result column="post_date" jdbcType="TIMESTAMP" property="postDate" />
+    <result column="want_day" jdbcType="TIMESTAMP" property="wantDay" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.fehead.songs.dataobject.SonglistsDO">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+
+  <sql id="Base_Column_List">
+    id, songer_name, song_name, steps, user_id, post_date, want_day
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+
+  <select id="selectAllLists" resultMap="ResultMapWithBLOBs">
+    select *
+    from songlists
+  </select>
+
+  <select id="selectStatus" resultMap="ResultMapWithBLOBs">
+    select *
+    from songlists
+    where steps = #{steps,jdbcType=INTEGER} and  user_id = #{user_id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getAllListsStatus_1"  resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from songlists
+    where steps=1
+    order by want_day
+  </select>
+
+  <select id="selectAllListByUserId" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from songlists
+    where user_id = #{user_id,jdbcType=INTEGER}
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="ResultMapWithBLOBs">
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from songlists
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from songlists
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.fehead.songs.dataobject.SonglistsDO">
+    insert into songlists (id, songer_name, song_name, 
+      steps, user_id, post_date, 
+      is_anonymous, want_day, content
+      )
+    values (#{id,jdbcType=INTEGER}, #{songerName,jdbcType=VARCHAR}, #{songName,jdbcType=VARCHAR}, 
+      #{steps,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{postDate,jdbcType=TIMESTAMP}, 
+      #{isAnonymous,jdbcType=BIT}, #{wantDay,jdbcType=TIMESTAMP}, #{content,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.fehead.songs.dataobject.SonglistsDO"  useGeneratedKeys="true" keyProperty="id" >
+    insert into songlists
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="songerName != null">
+        songer_name,
+      </if>
+      <if test="songName != null">
+        song_name,
+      </if>
+      <if test="steps != null">
+        steps,
+      </if>
+      <if test="userId != null">
+        user_id,
+      </if>
+      <if test="postDate != null">
+        post_date,
+      </if>
+      <if test="isAnonymous != null">
+        is_anonymous,
+      </if>
+      <if test="wantDay != null">
+        want_day,
+      </if>
+      <if test="content != null">
+        content,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="songerName != null">
+        #{songerName,jdbcType=VARCHAR},
+      </if>
+      <if test="songName != null">
+        #{songName,jdbcType=VARCHAR},
+      </if>
+      <if test="steps != null">
+        #{steps,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="postDate != null">
+        #{postDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wantDay != null">
+        #{wantDay,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+
+  <update id="updateStatusByListId">
+    update songlists
+    <set>
+      <if test="steps != null">
+        steps = #{steps,jdbcType=INTEGER}
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="updateByPrimaryKeySelective" parameterType="com.fehead.songs.dataobject.SonglistsDO">
+    update songlists
+    <set>
+      <if test="songerName != null">
+        songer_name = #{songerName,jdbcType=VARCHAR},
+      </if>
+      <if test="songName != null">
+        song_name = #{songName,jdbcType=VARCHAR},
+      </if>
+      <if test="steps != null">
+        steps = #{steps,jdbcType=INTEGER},
+      </if>
+      <if test="userId != null">
+        user_id = #{userId,jdbcType=INTEGER},
+      </if>
+      <if test="postDate != null">
+        post_date = #{postDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="wantDay != null">
+        want_day = #{wantDay,jdbcType=TIMESTAMP},
+      </if>
+      <if test="content != null">
+        content = #{content,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.fehead.songs.dataobject.SonglistsDO">
+    update songlists
+    set songer_name = #{songerName,jdbcType=VARCHAR},
+      song_name = #{songName,jdbcType=VARCHAR},
+      steps = #{steps,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      post_date = #{postDate,jdbcType=TIMESTAMP},
+      want_day = #{wantDay,jdbcType=TIMESTAMP},
+      content = #{content,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.fehead.songs.dataobject.SonglistsDO">
+    update songlists
+    set songer_name = #{songerName,jdbcType=VARCHAR},
+      song_name = #{songName,jdbcType=VARCHAR},
+      steps = #{steps,jdbcType=INTEGER},
+      user_id = #{userId,jdbcType=INTEGER},
+      post_date = #{postDate,jdbcType=TIMESTAMP},
+      want_day = #{wantDay,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
